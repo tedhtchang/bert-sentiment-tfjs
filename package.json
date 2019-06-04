@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "@tensorflow/tfjs": "^1.1.2",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "rollup": "^1.13.1",
+    "rollup-plugin-node-resolve": "^5.0.1",
+    "rollup-plugin-typescript2": "^0.21.1",
+    "typescript": "^3.5.1"
+  },
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tedhtchang/bert-sentiment-tfjs.git"
+  },
+  "author": "htchang@us@ibm.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tedhtchang/bert-sentiment-tfjs.git/issues"
+  },
+  "homepage": "https://github.com/tedhtchang/bert-sentiment-tfjs.git#readme"
+}
