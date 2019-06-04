@@ -5,7 +5,7 @@ export default {
   input: 'src/js/main.ts',
   output: [
     {
-      name: 'deepspeech_main',
+      name: 'bert_sentiment_tfjs',
       file: 'public/js/main.js',
       format: 'iife',
     },

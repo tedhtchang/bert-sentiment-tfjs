@@ -60,3 +60,13 @@ typings/
 # next.js build output
 .next
 
+# Generated files
+public/js/*.js
+dist/**
+
+# package manager
+package-lock.json
+yarn.lock
+
+# model files
+public/model/*
