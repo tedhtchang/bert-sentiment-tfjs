@@ -15,9 +15,9 @@ Sentiment Analysis using BERT model and Tensorflowjs
 
 * ./model is the folder to save the converted web friendly model files
 
-* [sentiment_BERT_base_uncased](s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/1.0.0/assets.tar.gz): Download and untar
+* sentiment_BERT_base_uncased: This is the models folder to be converted. [Download](http://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/1.0.0/assets.tar.gz) and untar
 
-* Place /model folder under public directory
+* Place ./model folder under public directory
 
 ### How to run this app
 1. npm run dev
