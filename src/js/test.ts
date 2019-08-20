@@ -1,4 +1,5 @@
 import WordPieceTokenizer from './tokenization';
+
 let tok = new WordPieceTokenizer('http://localhost:3000/vocab-1.json', true)
 
 async function tokenize(text: string){
@@ -8,6 +9,7 @@ async function tokenize(text: string){
   console.log('Token IDs :', ids);
   console.log('Tokens :', Tokens);
 }
+
 tokenize("I like strawberries?");
 tokenize("Like strawberries??maybe.");
 tokenize("strawberries?No. Thank you!");
