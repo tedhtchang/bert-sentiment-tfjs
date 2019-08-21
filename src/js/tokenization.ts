@@ -82,12 +82,18 @@ function cleanText(text: string){
 export default class WordPieceTokenizer{
   //Runs basic tokenization (punctuation splitting, lower casing, etc.).
   private doLowerCase: boolean;
-  private pathToVocabulary: string;
   tokenizer: use.Tokenizer;
+  clsId: number;
+  sepId: number;
 
-  constructor(pathToVocabulary: string, doLowerCase: boolean){
+  constructor(doLowerCase: boolean){
     this.doLowerCase = doLowerCase;
-    this.pathToVocabulary = pathToVocabulary;
+  }
+
+  async init(pathToVocabulary: string, ) {
+    await this.loadTokenizer(pathToVocabulary);
+    this.clsId = this.convertTokensToId('[CLS]')[0];
+    this.sepId = this.convertTokensToId('[SEP]')[0];
   }
 
   async tokenize(text: string){
@@ -97,8 +103,11 @@ export default class WordPieceTokenizer{
     if (this.doLowerCase){
       text = text.toLowerCase()
     }
-    this.tokenizer = await use.loadTokenizer(this.pathToVocabulary);
     return this.tokenizer.encode(text);
+  }
+  async loadTokenizer(pathToVocabulary: string){
+    this.tokenizer = await use.loadTokenizer(pathToVocabulary);
+    console.log("Loaded Tokenizer.");
   }
 
   convertIdsToTokens(ids: number[]){
@@ -106,7 +115,13 @@ export default class WordPieceTokenizer{
     ids.forEach( id => {tokens.push(this.tokenizer.vocabulary[id][0])});
     return tokens;
   }
+
+  convertTokensToId(token: string){
+    //convert a token directly to token ID without any pre processing
+    return this.tokenizer.encode(token);
+  }
 }
+
 
 // Unicode code points are extracted from repo below which is intended for node.js not client js.
 // https://github.com/mathiasbynens/unicode-12.1.0/blob/master/General_Category/Nonspacing_Mark/code-points.js
