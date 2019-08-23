@@ -2,12 +2,13 @@ import node from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2'
 
 export default {
-  input: 'src/js/test.ts',
+  input: 'src/js/main.ts',
   output: [
     {
       name: 'bert_sentiment_tfjs',
       file: 'public/js/main.js',
       format: 'iife',
+      sourcemap: true
     },
   ],
   plugins: [
@@ -16,7 +17,8 @@ export default {
       tsconfigOverride: {
         compilerOptions: {
           module: 'ES2015',
-          noUnusedLocals: false
+          noUnusedLocals: false,
+          inlineSourceMap: false
         },
       },
       include: ["src/js/*", "src/@types"],

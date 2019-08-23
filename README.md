@@ -20,19 +20,18 @@ Sentiment Analysis using BERT model and Tensorflowjs
 * Place ./model folder under public directory
 
 ### How to run this app
-1. npm run dev
+1.
+   Run ```npm install``` first to install the required modules.
+   Run ```npm run dev``` to run the app for development.
+
 2. Open http://localhost:3000 in browser
 3. Open web console in browser to see output which should look like:
    ```
-   loading model: 3666
-   [
-   0.5241742134094238,
-   0.4758257567882538
-   ]
-   predict: 2085
+   Loaded Tokenizer.
+   105 Model Loading time (ms): 4941
    ```
 ### Convert vocab.txt to vocab.json
-*
+* An included vocabulary file, vocab-1.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following script:
    ```
    cd src/util
    python txt2json-1.py
@@ -41,17 +40,16 @@ Sentiment Analysis using BERT model and Tensorflowjs
    # for "lower one eighth block" character
    ```
 *  Work in progress
-```
-# This is supposedly to generate the
-# U+2581 char during conversion but
-# USE does not generate the corrected
-# tokens
-cd src/util
-python txt2json.py
-
-```
-### Run USE tokenizer in debugger in vscode
-1. Open bert-sentiment-tfjs repo in vscode
-2. Click debug icon on left-hand side vertical tool bar
-3. Click on play buttom on the top to run the program
-4. See debug console for output
+   ```
+   # This is supposedly to generate the
+   # U+2581 char during conversion but
+   # USE does not generate the corrected
+   # tokens
+   cd src/util
+   python txt2json.py
+   ```
+### Run Debugger for Chrome in vscode
+1. Install the debugger from [here](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
+2. Open the debugger in VSCode.
+3. Set break points in the source code (*.ts).
+4. Clicking on the "Start Debugging" button will launch the Chrome browser using the configuration in launch.json.

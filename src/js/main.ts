@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import WordPieceTokenizer from './tokenization';
 
 declare global {
   interface Window {
@@ -9,44 +10,92 @@ declare global {
 let statusElement: HTMLLabelElement;
 
 class SentimentAnalysis {
-  model: tf.GraphModel;
+  private model: tf.GraphModel;
+  private tokenizer: WordPieceTokenizer;
+  constructor(){
+    this.tokenizer = new WordPieceTokenizer(true);
+  }
 
   async load(){
+    await this.tokenizer.init('http://localhost:3000/vocab-1.json');
     this.model = await tf.loadGraphModel('/model/model.json');
-    console.log(this.model.inputNodes);
-    console.log(this.model.outputNodes);
   }
 
-  async analyzeSentence(){
-    return await this._analyze(await this._inputFeature());
+  async analyzeSentence(text: string){
+    return await this.analyze(await this.inputFeature(text));
   }
-  async _analyze(feature: tf.NamedTensorMap){
+
+  analyze(feature: tf.NamedTensorMap){
     return tf.tidy(() => {
       let pred: tf.Tensor = this.model.predict({...feature}) as tf.Tensor;
       return pred.squeeze([0]);
     });
   }
 
-  async _tokenization(example: string){
+  async inputFeature(text: string){
+    const singleInput = await this.convertSingleExample(text);
+    let inputIds = tf.tensor1d(singleInput.inputIds, 'int32').expandDims(0);
+    let inputMask = tf.tensor1d(singleInput.inputMask, 'int32').expandDims(0);
+    let segmentIds = tf.tensor1d(singleInput.segmentIds, 'int32').expandDims(0);
+    return {"input_ids_1": inputIds, "input_mask_1": inputMask, "segment_ids_1": segmentIds};
   }
 
-  async _inputFeature(){
-    let feature: tf.Tensor;
-    //Hard code "i like strawberries"
-    let input_ids_1 = tf.tensor1d([101, 1045, 2066, 13137, 20968, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],'int32').expandDims(0);
-    let input_mask_1 = tf.tensor1d([1 ,1 ,1 ,1 ,1 ,1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],'int32').expandDims(0);
-    let segment_ids_1 = tf.tensor1d([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'int32').expandDims(0);
-    return {input_ids_1, segment_ids_1, input_mask_1};
+  async convertSingleExample(text: string){
+    // converts single example to feature input. This is derived from:
+    // https://github.com/google-research/bert/blob/88a817c37f788702a363ff935fd173b6dc6ac0d6/run_classifier.py#L377-L476
+
+    let inputIds: number[] = [];
+    let inputMask: number[] = [];
+    let segmentIds: number[] = [];
+    const tokenIds = await this.tokenizer.tokenize(text);
+    const maxSeqLength = 128;
+
+    inputIds.push(this.tokenizer.clsId)
+    inputMask.push(1);
+    segmentIds.push(0);
+
+    inputIds.push(...tokenIds);
+    tokenIds.forEach(id => {
+      inputMask.push(1);
+      segmentIds.push(0);
+    });
+
+    inputIds.push(this.tokenizer.sepId)
+    inputMask.push(1);
+    segmentIds.push(0);
+
+    // pad with 0 up to the maxSeqLength
+    const numTokens = inputIds.length
+    for (let i = 0; i < maxSeqLength - numTokens; i++){
+      inputIds.push(0);
+      inputMask.push(0);
+      segmentIds.push(0);
+    }
+    console.log('input_ids: ', inputIds);
+    console.log('input_mask: ', inputMask);
+    console.log('segmentIds: ', segmentIds);
+    console.log('tokens: ', this.tokenizer.convertIdsToTokens(tokenIds));
+    return {inputIds, segmentIds, inputMask};
   }
 }
 
 async function pageLoaded() {
-  let start = Date.now();
-  await measureElapsedTime('loading model', async () => {
+  await measureElapsedTime('Model Loading time (ms)', async () => {
     await loadModel();
   });
-  await measureElapsedTime('predict', async () => {
-    await predict();
+  document.getElementById("div1").style.display = "block";
+  document.getElementById("submit_text").addEventListener("click",
+    event => {
+      event.preventDefault();
+      let text = (<HTMLInputElement>document.getElementById("text_input")).value
+      textSubmit(text);
+    }
+  )
+}
+
+async function textSubmit(text: string) {
+  await measureElapsedTime('Prediction time (ms)', async () => {
+    await predict(text);
   });
 }
 
@@ -63,9 +112,9 @@ async function loadModel() {
   updateStatus('bert model loaded!');
 }
 
-async function predict() {
+async function predict(text: string) {
   updateStatus('preidcting');
-  let result = await sa.analyzeSentence();
+  let result = await sa.analyzeSentence(text);
   console.log(JSON.stringify(result.arraySync(), null, 2));
   updateStatus(`result:${result.arraySync()}`);
   result.dispose();
@@ -77,6 +126,5 @@ function updateStatus(msg: string) {
   }
   statusElement.innerHTML = msg;
 }
-
 window.pageLoaded = pageLoaded;
 
