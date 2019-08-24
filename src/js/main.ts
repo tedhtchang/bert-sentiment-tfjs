@@ -17,7 +17,7 @@ class SentimentAnalysis {
   }
 
   async load(){
-    await this.tokenizer.init('http://localhost:3000/vocab-1.json');
+    await this.tokenizer.init('http://localhost:3000/vocab.json');
     this.model = await tf.loadGraphModel('/model/model.json');
   }
 
