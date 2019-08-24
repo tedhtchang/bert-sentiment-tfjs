@@ -31,20 +31,8 @@ Sentiment Analysis using BERT model and Tensorflowjs
    105 Model Loading time (ms): 4941
    ```
 ### Convert vocab.txt to vocab.json
-* An included vocabulary file, vocab-1.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following script:
-   ```
-   cd src/util
-   python txt2json-1.py
-   # Then replace all "_ with "▁
-   # This is a U+2581 unicode
-   # for "lower one eighth block" character
-   ```
-*  Work in progress
-   ```
-   # This is supposedly to generate the
-   # U+2581 char during conversion but
-   # USE does not generate the corrected
-   # tokens
+* An included vocabulary file, vocab.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following script:
+*  ```
    cd src/util
    python txt2json.py
    ```
