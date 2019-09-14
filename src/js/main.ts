@@ -27,7 +27,7 @@ class SentimentAnalysis {
 
   analyze(feature: tf.NamedTensorMap){
     return tf.tidy(() => {
-      let pred: tf.Tensor = this.model.predict({...feature}) as tf.Tensor;
+      let pred: tf.Tensor = this.model.execute({...feature}, 'loss/Softmax') as tf.Tensor;
       return pred.squeeze([0]);
     });
   }

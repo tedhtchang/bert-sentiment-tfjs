@@ -1,25 +1,24 @@
 # bert-sentiment-tfjs
 Sentiment Analysis using BERT model and Tensorflowjs
 ## Instruction:
-### Convert to tfjs model format using tensorflowjs_converter v0.8.6
+### Convert to tfjs model format using tensorflowjs_converter
 * Run command:
    ```
    tensorflowjs_converter \
-   --input_format=tf_saved_model \
-   --output_format=tensorflowjs \
-   --output_json=1 \
-   --output_node_names=loss/Softmax \
-   sentiment_BERT_base_uncased
-   ./model
+   --input_format tf_saved_model \
+   --signature_name serving_default \
+   --saved_model_tags serve \
+   <saved_model_directory>
+   <output_directory>
    ```
+* <saved_model_directory>: This is the models folder to be converted. [Download](http://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/1.0.0/assets.tar.gz) and untar
 
-* ./model is the folder to save the converted web friendly model files
+* <output_directory> is the folder to save the converted web friendly model files.
 
-* sentiment_BERT_base_uncased: This is the models folder to be converted. [Download](http://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/1.0.0/assets.tar.gz) and untar
-
-* Place ./model folder under public directory
+* move the content of <output_directory> to the  ```public/model/``` directory under project home.
 
 ### How to run this app
+0. To patch the Erf bug, run ```cp patch/tf-core.* node_modules/@tensorflow/tfjs-core/dist/``` to overwrite the pre-compiled files.
 1.
    Run ```npm install``` first to install the required modules.
    Run ```npm run dev``` to run the app for development.
@@ -30,6 +29,7 @@ Sentiment Analysis using BERT model and Tensorflowjs
    Loaded Tokenizer.
    105 Model Loading time (ms): 4941
    ```
+
 ### Convert vocab.txt to vocab.json
 * An included vocabulary file, vocab.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following script:
 *  ```

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@tensorflow/tfjs": "^1.2.5",
+    "@tensorflow/tfjs": "^1.2.9",
     "express": "^4.17.1",
     "numpy": "0.0.1"
   },
