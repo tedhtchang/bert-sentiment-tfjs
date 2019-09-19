@@ -114,9 +114,10 @@ async function loadModel() {
 
 async function predict(text: string) {
   updateStatus('preidcting');
-  let result = await sa.analyzeSentence(text);
+  const result = await sa.analyzeSentence(text);
   console.log(JSON.stringify(result.arraySync(), null, 2));
-  updateStatus(`result:${result.arraySync()}`);
+  const res = result.arraySync() as number[];
+  updateStatus(`<br />Positive &#128512;: ${res[0].toFixed(4)}<br />Negative &#128534;: ${res[1].toFixed(4)}`);
   result.dispose();
 }
 
