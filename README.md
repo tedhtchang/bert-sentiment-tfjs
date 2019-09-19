@@ -31,10 +31,10 @@ Sentiment Analysis using BERT model and Tensorflowjs
    ```
 
 ### Convert vocab.txt to vocab.json
-* An included vocabulary file, vocab.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following script:
+* An included vocabulary file, vocab.json, is extracted and converted from "[Bert-base, uncase](https://github.com/google-research/bert#pre-trained-models)". If you would like to convert other pre-trained vocabularies use the following example:
 *  ```
    cd src/util
-   python txt2json.py
+   python txt2json.py ../../public/vocab.txt /tmp/vocab.json
    ```
 ### Run Debugger for Chrome in vscode
 1. Install the debugger from [here](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
