@@ -74,7 +74,7 @@ class SentimentAnalysis {
     console.log('input_ids: ', inputIds);
     console.log('input_mask: ', inputMask);
     console.log('segmentIds: ', segmentIds);
-    console.log('tokens: ', this.tokenizer.convertIdsToTokens(tokenIds));
+    console.log('tokens: ', this.tokenizer.convertIdsToTokens(inputIds));
     return {inputIds, segmentIds, inputMask};
   }
 }
