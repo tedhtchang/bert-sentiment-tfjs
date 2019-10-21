@@ -1,4 +1,5 @@
 import * as use from '@tensorflow-models/universal-sentence-encoder';
+import * as tf from '@tensorflow/tfjs';
 
 function isPunctuation(cp: number):boolean {
   // Checks a cp is a punctuation character or not.
@@ -13,7 +14,7 @@ function runStripAccents(text: string){
 }
 
 function isWhiteSpace(cp: number): boolean{
-  // \t, \n, and \r are technically contorl characters but we treat them
+  // \t, \n, and \r are technically control characters but we treat them
   // as whitespace since they are generally considered as such.
   if (cp === 32 || cp === 9 || cp === 10 || cp === 13) {
     return true;
@@ -119,6 +120,52 @@ export default class WordPieceTokenizer{
   convertTokensToId(token: string){
     //convert a token directly to token ID without any pre processing
     return this.tokenizer.encode(token);
+  }
+
+  async inputFeature(text: string){
+    const singleInput = await this.convertSingleExample(text);
+    let inputIds = tf.tensor1d(singleInput.inputIds, 'int32').expandDims(0);
+    let inputMask = tf.tensor1d(singleInput.inputMask, 'int32').expandDims(0);
+    let segmentIds = tf.tensor1d(singleInput.segmentIds, 'int32').expandDims(0);
+    return {"input_ids_1": inputIds, "input_mask_1": inputMask, "segment_ids_1": segmentIds};
+  }
+
+  async convertSingleExample(text: string){
+    // converts single example to feature input. This is derived from:
+    // https://github.com/google-research/bert/blob/88a817c37f788702a363ff935fd173b6dc6ac0d6/run_classifier.py#L377-L476
+
+    let inputIds: number[] = [];
+    let inputMask: number[] = [];
+    let segmentIds: number[] = [];
+    const tokenIds = await this.tokenize(text);
+    const maxSeqLength = 128;
+
+    inputIds.push(this.clsId)
+    inputMask.push(1);
+    segmentIds.push(0);
+
+    inputIds.push(...tokenIds);
+    tokenIds.forEach(id => {
+      inputMask.push(1);
+      segmentIds.push(0);
+    });
+
+    inputIds.push(this.sepId)
+    inputMask.push(1);
+    segmentIds.push(0);
+
+    // pad with 0 up to the maxSeqLength
+    const numTokens = inputIds.length
+    for (let i = 0; i < maxSeqLength - numTokens; i++){
+      inputIds.push(0);
+      inputMask.push(0);
+      segmentIds.push(0);
+    }
+    console.log('input_ids: ', inputIds);
+    console.log('input_mask: ', inputMask);
+    console.log('segmentIds: ', segmentIds);
+    console.log('tokens: ', this.convertIdsToTokens(inputIds));
+    return {inputIds, segmentIds, inputMask};
   }
 }
 
