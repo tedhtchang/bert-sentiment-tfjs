@@ -1,4 +1,8 @@
 {
+  "name": "bert-sentiment-tfjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/js/tokenization.js",
   "dependencies": {
     "@tensorflow/tfjs": "^1.2.9",
     "express": "^4.17.1",
