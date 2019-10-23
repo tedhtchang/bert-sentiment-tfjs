@@ -20,5 +20,5 @@
     "allowUnreachableCode": false,
     "experimentalDecorators": true
   },
-  "include": ["src/server/**/*"]
+  "include": ["src/server/**/*", "src/js/tokenization.ts","src/js/sentimentanalysis"]
 }
