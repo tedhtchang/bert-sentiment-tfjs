@@ -20,6 +20,7 @@
     "unicode-12.1.0": "^0.8.0"
   },
   "scripts": {
+    "install": "tsc",
     "build": "tsc && rollup -c",
     "start": "node dist/server/index.js",
     "watch:server": "tsc -w",
