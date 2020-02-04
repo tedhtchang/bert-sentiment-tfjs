@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
-  "include": ["src/server/**/*", "src/js/tokenization.ts","src/js/sentimentanalysis"]
+  "include": ["src/server/**/*", "src/libs/tokenization.ts","src/js/**/*"]
 }
