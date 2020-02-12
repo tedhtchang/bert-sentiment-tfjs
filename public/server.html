@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>Sentiment Analysis</title>
+    </head>
+    <body>
+        <h1>Sentiment Analysis Service</h1>
+        <div id="div1">
+            <input type="text" id="text_input" name="text_input" value="Enter a sentence.">
+            <input type="button" id="submit_text" value="Analyze" >
+        </div>
+        <p>
+          <label for="status">status:</label>
+          <output name="status" id="status"></output>
+        </p>
+    </body>
+    <script>
+        document.getElementById('submit_text').addEventListener('click', getAPI);
+        async function getAPI(){
+            let text = document.getElementById("text_input").value;
+            let url = "/predict?text_input=" + text;
+            let res = await fetch(url);
+            let json = await res.json();
+            updateStatus(`
+                <br> ${text}
+                <br>Positive &#128512;: ${json['pos'].toFixed(4)}
+                <br>Negative &#128534;: ${json['neg'].toFixed(4)}<br>`);
+        }
+        function updateStatus(msg) {
+           let statusElement = document.getElementById('status');
+           statusElement.innerHTML += msg;
+           console.log(statusElement.innerHTML);
+        }   
+</script>
+</html>

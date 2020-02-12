@@ -9,8 +9,8 @@ export default class SentimentAnalysis {
   }
 
   async load(){
-    await this.tokenizer.init('http://localhost:3000/vocab.json');
-    this.model = await tf.loadGraphModel('/model/model.json');
+    await this.tokenizer.init('https://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/tfjs/0.1.0/vocab.json');
+    this.model = await tf.loadGraphModel('https://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/tfjs/0.1.0/model.json');
   }
 
   async analyzeSentence(text: string){
