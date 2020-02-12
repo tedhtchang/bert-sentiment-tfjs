@@ -15,13 +15,12 @@ export default class SentimentAnalysis {
 
   async load(){
     await this.tokenizer.init('https://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/tfjs/0.1.0/vocab.json');
-
     const modelDir = path.join(`${__dirname}`, '..', '..', '/public/model');
     const modelJson = path.join(modelDir, '/model.json');
-
-    if(!fs.existsSync(modelJson)){
+    if( ! fs.existsSync(modelJson)){
       tf.io.registerLoadRouter(tf.io.http as IORouter);
-      tf.io.copyModel(modelJsonUrl, 'file://' + modelDir);
+      console.log("Downloading model from " + modelJsonUrl + ' to ' + 'file://' + modelDir);
+      await tf.io.copyModel(modelJsonUrl, 'file://' + modelDir);
     }
     const fileSystem = require('@tensorflow/tfjs-node/dist/io/file_system');
     this.model = await tf.loadGraphModel(fileSystem.fileSystem(modelJson));
