@@ -70,3 +70,5 @@ yarn.lock
 
 # model files
 public/model/*
+
+.vscode/*

@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import {IORouter} from '@tensorflow/tfjs-core/dist/io/router_registry';
 
-const modelJsonUrl = 'https://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/tfjs/0.1.0/model.json'
+const modelJsonUrl = 'https://max-cdn.cdn.appdomain.cloud/max-text-sentiment-classifier/tfjs/0.1.0/model.json'
 
 export default class SentimentAnalysis {
   private model: tf.GraphModel;
@@ -14,7 +14,7 @@ export default class SentimentAnalysis {
   }
 
   async load(){
-    await this.tokenizer.init('https://s3.us-south.cloud-object-storage.appdomain.cloud/max-assets-prod/max-text-sentiment-classifier/tfjs/0.1.0/vocab.json');
+    await this.tokenizer.init('https://max-cdn.cdn.appdomain.cloud/max-text-sentiment-classifier/tfjs/0.1.0/vocab.json');
     const modelDir = path.join(`${__dirname}`, '..', '..', '/public/model');
     const modelJson = path.join(modelDir, '/model.json');
     if( ! fs.existsSync(modelJson)){
